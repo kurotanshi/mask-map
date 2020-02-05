@@ -1,15 +1,15 @@
 <template>
   <div class="vue-leaflet">
     <div class="map">
-      <l-map :zoom="zoom" :center="center">
+
+      <l-map :zoom="zoom" :center="center" ref="myMap">
         <l-tile-layer :url="url" :attribution="attribution"></l-tile-layer>
         <v-marker-cluster>
           <l-marker v-for="s in stores" :key="s.id" :lat-lng="getCoods(s.x, s.y)" >
-            <l-popup :content="s.name"></l-popup>
+            <l-popup :content="getPopup(s)"></l-popup>
           </l-marker>
         </v-marker-cluster>
 
-        <!-- <l-geo-json :geojson="geoJson" :options="geoJsonOptions"></l-geo-json> -->
       </l-map>
     </div>
   </div>
@@ -22,7 +22,6 @@ import {
   LMap,
   LTileLayer,
   LMarker,
-  // LGeoJson,
   LPopup
 } from 'vue2-leaflet'
 
@@ -35,7 +34,6 @@ export default {
     LMap,
     LTileLayer,
     LMarker,
-    // LGeoJson,
     LPopup
   },
   data () {
@@ -57,11 +55,27 @@ export default {
 
       return [lat, lng]
     },
+    getPopup (item) {
+      let addr = item.address.includes('\n') ? item.address.split('\n')[0] : item.address
+
+      return `
+        <h3 class="store-title">${item.name}</h3>
+        <div class="store-info">
+          <a target="_blank" href="https://www.google.com.tw/maps/place/${addr}">${addr}</a><br>
+          ${item.tel}
+        </div>
+      `
+    },
     renderMap () {
+      navigator.geolocation.getCurrentPosition((pos) => {
+        const p = pos.coords
+        this.center = L.latLng(p.latitude, p.longitude)
+        this.zoom = 14
+      })
+
       fetch('./med-stores.json')
         .then(res => res.json())
         .then(jsonData => {
-          // console.log(jsonData)
           this.stores = jsonData
         })
     }
@@ -100,4 +114,17 @@ export default {
   height: 100%;
   z-index: 1;
 }
+
+>>> .store-title {
+  font-size: 1.3em;
+  line-height: 1.7em;
+  font-weight: 900;
+  margin-bottom: 6px;
+}
+
+>>> .store-info {
+  font-size: 1.1em;
+  line-height: 1.5;
+}
+
 </style>
