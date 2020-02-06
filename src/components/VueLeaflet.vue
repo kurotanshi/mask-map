@@ -119,6 +119,9 @@ export default {
       L.control.zoom({ position: 'bottomright' }).addTo(map)
 
       navigator.geolocation.getCurrentPosition((pos) => {
+        const p = pos.coords
+        this.center = L.latLng(p.latitude, p.longitude)
+
         this.$refs.hereMarker.mapObject.bindTooltip('You', {
           offset: [0, -36],
           permanent: true,
