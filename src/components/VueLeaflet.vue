@@ -1,53 +1,59 @@
+/* eslint-disable no-unused-vars */
 <template>
   <div class="vue-leaflet">
     <div class="map">
 
       <l-map :zoom="zoom" :center="center" :options="{ zoomControl: false }" ref="myMap">
         <l-tile-layer :url="url" :attribution="attribution"></l-tile-layer>
-
         <l-marker :lat-lng="center" :icon="icon" ref='hereMarker'></l-marker>
-
-        <v-marker-cluster>
-          <l-marker v-for="s in stores" :key="s.id" :lat-lng="getCoods(s.x, s.y)">
-            <l-popup :content="getPopup(s)"></l-popup>
-          </l-marker>
+        <v-marker-cluster :options="clusterOptions">
+          <l-geo-json v-for="geoJson in stores" :key="geoJson.id" :geojson="geoJson" :options="geoJsonOptions"></l-geo-json>
         </v-marker-cluster>
-
-        <!-- <l-geo-json :geojson="geoJson" :options="geoJsonOptions"></l-geo-json> -->
       </l-map>
     </div>
   </div>
 </template>
 
 <script>
-import Vue2LeafletMarkerCluster from 'vue2-leaflet-markercluster'
 
 import {
   LMap,
   LTileLayer,
   LMarker,
-  LPopup
-  // LGeoJson,
+  LGeoJson
 } from 'vue2-leaflet'
+import Vue2LeafletMarkerCluster from 'vue2-leaflet-markercluster'
 
-var L = window.L
+const L = window.L
 
 export default {
   name: 'VueLeaflet',
   components: {
-    'v-marker-cluster': Vue2LeafletMarkerCluster,
     LMap,
     LTileLayer,
+    LGeoJson,
     LMarker,
-    // LGeoJson,
-    LPopup
+    'v-marker-cluster': Vue2LeafletMarkerCluster
   },
   data () {
     return {
       stores: [],
-      zoom: 16,
       center: L.latLng(25.0677505, 121.5470599),
-      token: '',
+      zoom: 15,
+      isEmptyHide: false,
+      clusterOptions: {
+        disableClusteringAtZoom: 16
+      },
+      geoJsonOptions: {
+        style: (feature) => {
+
+        },
+        pointToLayer: this.createCustomIcon,
+        onEachFeature: (feature, layer) => {
+          // console.log(feature, layer)
+          layer.bindPopup(this.getPopup(feature.properties))
+        }
+      },
       icon: L.icon({
         iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-violet.png',
         shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
@@ -70,21 +76,48 @@ export default {
       return [lat, lng]
     },
     getPopup (item) {
-      let addr = item.address.includes('\n') ? item.address.split('\n')[0] : item.address
-
       return `
         <h3 class="store-title">${item.name}</h3>
         <div class="store-info">
-          <a target="_blank" href="https://www.google.com.tw/maps/place/${addr}">${addr}</a><br>
-          ${item.tel}
+          <div>成人口罩: ${item.mask_adult}</div>
+          <div>小孩口罩: ${item.mask_child}</div>
+          <div>資料更新: ${item.updated}</div>
+          <a target="_blank" href="https://www.google.com.tw/maps/place/${item.address}">${item.address}</a><br>
+          ${item.phone}
         </div>
       `
     },
+    createCustomIcon (feature, latlng) {
+      let prop = feature.properties
+      let range = prop.mask_adult + prop.mask_child
+      let color = null
+
+      if (range > 100) {
+        color = 'green'
+      } else if (range > 50) {
+        color = 'yellow'
+      } else if (range > 0) {
+        color = 'red'
+      } else {
+        color = 'grey'
+      }
+
+      let myIcon = L.icon({
+        iconUrl: `https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-${color}.png`,
+        shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+        iconSize: [25, 41],
+        iconAnchor: [12, 41],
+        popupAnchor: [1, -34],
+        shadowSize: [41, 41]
+      })
+
+      return L.marker(latlng, { icon: myIcon })
+    },
     renderMap () {
-      fetch('./med-stores.json')
+      fetch('https://kiang.github.io/pharmacies/json/points.json')
         .then(res => res.json())
         .then(jsonData => {
-          // console.log(jsonData[0])
+          console.log(jsonData)
           this.stores = jsonData
         })
     }
@@ -97,8 +130,6 @@ export default {
       L.control.zoom({ position: 'bottomright' }).addTo(map)
 
       navigator.geolocation.getCurrentPosition((pos) => {
-        const p = pos.coords
-        this.center = L.latLng(p.latitude, p.longitude)
         this.$refs.hereMarker.mapObject.bindTooltip('You', {
           offset: [0, -36],
           permanent: true,
@@ -110,7 +141,6 @@ export default {
 }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 @import "~leaflet.markercluster/dist/MarkerCluster.css";
 @import "~leaflet.markercluster/dist/MarkerCluster.Default.css";
