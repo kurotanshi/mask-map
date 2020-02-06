@@ -7,7 +7,11 @@
         <l-tile-layer :url="url" :attribution="attribution"></l-tile-layer>
         <l-marker :lat-lng="center" :icon="icon" ref='hereMarker'></l-marker>
         <v-marker-cluster :options="clusterOptions">
-          <l-geo-json v-for="geoJson in stores" :key="geoJson.id" :geojson="geoJson" :options="geoJsonOptions"></l-geo-json>
+          <l-geo-json
+            v-for="geoJson in stores"
+            :key="geoJson.id"
+            :geojson="geoJson"
+            :options="geoJsonOptions"></l-geo-json>
         </v-marker-cluster>
       </l-map>
     </div>
@@ -69,14 +73,6 @@ export default {
     stores () { return this.$store.state.stores }
   },
   methods: {
-    getCoods (x, y) {
-      x = x.toString()
-      y = y.toString()
-      let lng = x.includes('\n') ? x.split('\n')[0] : x
-      let lat = y.includes('\n') ? y.split('\n')[0] : y
-
-      return [lat, lng]
-    },
     getPopup (item) {
       return `
         <h3 class="store-title">${item.name}</h3>
