@@ -111,8 +111,8 @@ export default {
       return L.marker(latlng, { icon })
     }
   },
-  async mounted () {
-    await this.$store.dispatch('fetchPharmacies')
+  mounted () {
+    this.$store.dispatch('fetchPharmacies')
 
     this.$nextTick(() => {
       const map = this.$refs.myMap.mapObject
