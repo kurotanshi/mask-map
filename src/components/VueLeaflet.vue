@@ -2,7 +2,6 @@
 <template>
   <div class="vue-leaflet">
     <div class="map">
-
       <l-map :zoom="zoom" :center="center" :options="{ zoomControl: false }" ref="myMap">
         <l-tile-layer :url="url" :attribution="attribution"></l-tile-layer>
         <l-marker :lat-lng="center" :icon="icon" ref='hereMarker'></l-marker>
@@ -74,14 +73,16 @@ export default {
   },
   methods: {
     getPopup (item) {
+      let phone = `(${item.phone.substr(0, 2)}) ${item.phone.substr(4, 4)}-${item.phone.substr(8)}`
       return `
         <h3 class="store-title">${item.name}</h3>
         <div class="store-info">
+          <div><i class="fas fa-phone"></i> <a href="tel:+886-${item.phone.substring(1).replace(' ', '')}">${phone}</a></div>
+          <div><i class="fas fa-directions"></i> <a target="_blank" href="https://www.google.com.tw/maps/place/${item.address}">${item.address}</a></div>
+          <hr>
           <div>成人口罩: ${item.mask_adult}</div>
           <div>小孩口罩: ${item.mask_child}</div>
-          <div>資料更新: ${item.updated}</div>
-          <a target="_blank" href="https://www.google.com.tw/maps/place/${item.address}">${item.address}</a><br>
-          ${item.phone}
+          <div>更新時間: ${item.updated === '' ? '(不明)' : item.updated}</div>
         </div>
       `
     },
@@ -158,15 +159,21 @@ export default {
 }
 
 >>> .store-title {
-  font-size: 1.3em;
+  font-size: 1.5em;
   line-height: 1.7em;
   font-weight: 900;
   margin-bottom: 6px;
+  text-align: center;
 }
 
 >>> .store-info {
-  font-size: 1.1em;
+  font-size: 1.3em;
   line-height: 1.5;
+}
+
+>>> .fa-phone, .fa-directions {
+  font-size: 0.85em;
+  font-weight: 600;
 }
 
 </style>
