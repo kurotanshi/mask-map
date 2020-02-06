@@ -81,6 +81,12 @@ export default {
         </div>
       `
     },
+    customIcon (color) {
+      return {
+        ...settings.icon,
+        iconUrl: `https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-${color}.png`
+      }
+    },
     createCustomIcon (feature, latlng) {
       let prop = feature.properties
       let range = prop.mask_adult + prop.mask_child
@@ -96,16 +102,7 @@ export default {
         color = 'grey'
       }
 
-      let myIcon = L.icon({
-        iconUrl: `https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-${color}.png`,
-        shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
-        iconSize: [25, 41],
-        iconAnchor: [12, 41],
-        popupAnchor: [1, -34],
-        shadowSize: [41, 41]
-      })
-
-      return L.marker(latlng, { icon: myIcon })
+      return L.marker(latlng, { icon: L.icon(this.customIcon(color)) })
     },
     renderMap () {
       fetch('https://kiang.github.io/pharmacies/json/points.json')
