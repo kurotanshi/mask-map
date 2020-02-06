@@ -56,8 +56,17 @@ export default {
       },
       icon: L.icon(settings.icon),
       url: settings.mapURL,
-      attribution: settings.attribute
+      attribution: settings.attribute,
+      icons: {
+        grey: this.customIcon('grey'),
+        yellow: this.customIcon('yellow'),
+        green: this.customIcon('green'),
+        red: this.customIcon('red')
+      }
     }
+  },
+  computed: {
+    stores () { return this.$store.state.stores }
   },
   methods: {
     getCoods (x, y) {
@@ -81,31 +90,26 @@ export default {
       `
     },
     customIcon (color) {
-      return {
+      return L.icon({
         ...settings.icon,
         iconUrl: `https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-${color}.png`
-      }
+      })
     },
     createCustomIcon (feature, latlng) {
       let prop = feature.properties
       let range = prop.mask_adult + prop.mask_child
-      let color = null
+      let icon = this.icons.grey
 
       if (range > 100) {
-        color = 'green'
+        icon = this.icons.green
       } else if (range > 50) {
-        color = 'yellow'
+        icon = this.icons.yellow
       } else if (range > 0) {
-        color = 'red'
-      } else {
-        color = 'grey'
+        icon = this.icons.red
       }
 
-      return L.marker(latlng, { icon: L.icon(this.customIcon(color)) })
+      return L.marker(latlng, { icon })
     }
-  },
-  computed: {
-    stores () { return this.$store.state.stores }
   },
   async mounted () {
     await this.$store.dispatch('fetchPharmacies')
