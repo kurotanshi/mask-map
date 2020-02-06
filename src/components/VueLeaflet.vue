@@ -23,6 +23,7 @@ import {
   LGeoJson
 } from 'vue2-leaflet'
 import Vue2LeafletMarkerCluster from 'vue2-leaflet-markercluster'
+import settings from '@/resource/map-settings.json'
 
 const L = window.L
 
@@ -38,8 +39,8 @@ export default {
   data () {
     return {
       stores: [],
-      center: L.latLng(25.0677505, 121.5470599),
-      zoom: 15,
+      center: L.latLng(settings.center),
+      zoom: settings.zoom,
       isEmptyHide: false,
       clusterOptions: {
         disableClusteringAtZoom: 16
@@ -54,16 +55,9 @@ export default {
           layer.bindPopup(this.getPopup(feature.properties))
         }
       },
-      icon: L.icon({
-        iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-violet.png',
-        shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
-        iconSize: [25, 41],
-        iconAnchor: [12, 41],
-        popupAnchor: [1, -34],
-        shadowSize: [41, 41]
-      }),
-      url: 'https://api.tiles.mapbox.com/v4/mapbox.streets/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw',
-      attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>'
+      icon: L.icon(settings.icon),
+      url: settings.mapURL,
+      attribution: settings.attribute
     }
   },
   methods: {
