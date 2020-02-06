@@ -38,7 +38,6 @@ export default {
   },
   data () {
     return {
-      stores: [],
       center: L.latLng(settings.center),
       zoom: settings.zoom,
       isEmptyHide: false,
@@ -103,18 +102,13 @@ export default {
       }
 
       return L.marker(latlng, { icon: L.icon(this.customIcon(color)) })
-    },
-    renderMap () {
-      fetch('https://kiang.github.io/pharmacies/json/points.json')
-        .then(res => res.json())
-        .then(jsonData => {
-          console.log(jsonData)
-          this.stores = jsonData
-        })
     }
   },
-  mounted () {
-    this.renderMap()
+  computed: {
+    stores () { return this.$store.state.stores }
+  },
+  async mounted () {
+    await this.$store.dispatch('fetchPharmacies')
 
     this.$nextTick(() => {
       const map = this.$refs.myMap.mapObject
