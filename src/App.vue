@@ -2,7 +2,7 @@
   <div id="app">
 
     <div class="info" @click.prevent="isPopupShow = true">
-      <h1>口罩供需資訊平台 & 健保特約醫事機構地圖</h1>
+      <h1>口罩供需資訊 & 健保特約醫事機構地圖</h1>
       <i class="fas fa-info-circle"></i>
     </div>
 

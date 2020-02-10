@@ -53,7 +53,7 @@ export default {
         },
         pointToLayer: this.createCustomIcon,
         onEachFeature: (feature, layer) => {
-          // console.log(feature, layer)
+          console.log(feature, layer)
           layer.bindPopup(this.getPopup(feature.properties))
         }
       },
@@ -82,7 +82,7 @@ export default {
           <hr>
           <div>成人口罩: ${item.mask_adult}</div>
           <div>小孩口罩: ${item.mask_child}</div>
-          <div>更新時間: ${item.updated === '' ? '(不明)' : item.updated}</div>
+          <div>更新時間: ${item.updated === '' ? '(無配送資訊)' : item.updated}</div>
         </div>
       `
     },
