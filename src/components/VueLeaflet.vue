@@ -94,7 +94,7 @@ export default {
     },
     createCustomIcon (feature, latlng) {
       let prop = feature.properties
-      let range = prop.mask_adult + prop.mask_child
+      let range = prop.mask_adult;
       let icon = this.icons.grey
 
       if (range > 100) {
