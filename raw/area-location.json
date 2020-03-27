@@ -1,7 +1,7 @@
 [{
   "sort": 1,
   "id": "0000",
-  "name": "台北市",
+  "name": "臺北市",
   "districts": [{
     "sort": 10,
     "id": 1,
@@ -790,7 +790,7 @@
 }, {
   "sort": 6,
   "id": "0010",
-  "name": "台中市",
+  "name": "臺中市",
   "districts": [{
     "sort": 7,
     "id": 114,
@@ -1477,7 +1477,7 @@
   }, {
     "sort": 18,
     "id": 209,
-    "name": "台西鄉",
+    "name": "臺西鄉",
     "latitude": 23.700391,
     "longitude": 120.195788,
     "zipCode": 636
@@ -1576,7 +1576,7 @@
 }, {
   "sort": 8,
   "id": "0017",
-  "name": "台南市",
+  "name": "臺南市",
   "districts": [{
     "sort": 6,
     "id": 224,
@@ -2223,7 +2223,7 @@
   }, {
     "sort": 27,
     "id": 316,
-    "name": "霧台鄉",
+    "name": "霧臺鄉",
     "latitude": 22.748991,
     "longitude": 120.728457,
     "zipCode": 902
@@ -2441,11 +2441,11 @@
 }, {
   "sort": 19,
   "id": "0025",
-  "name": "台東縣",
+  "name": "臺東縣",
   "districts": [{
     "sort": 1,
     "id": 347,
-    "name": "台東市",
+    "name": "臺東市",
     "latitude": 22.754611,
     "longitude": 121.146857,
     "zipCode": 950
